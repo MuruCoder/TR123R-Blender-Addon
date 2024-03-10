@@ -269,7 +269,7 @@ def processTRM(data, name, scale):
     for mat in materials:
         if len(mat['polys']) > 0:
             material = createMaterial(mat['tex'], mat['shdr'], mat['sub'])
-            trm.data.materials.append(material)
+            mesh.materials.append(material)
             for p in mat['polys']:
                 polygons[p].material_index = current
             current += 1
@@ -289,15 +289,11 @@ def normalByte2Float(x, y, z):
 
 
 def int2rgba(i):
-    def linear(c):
-        if c < 0: return 0
-        elif c < 0.04045: return c/12.92
-        else: return ((c+0.055)/1.055)**2.4
     r = (i & 0x000000ff)
     g = (i & 0x0000ff00) >> 8
     b = (i & 0x00ff0000) >> 16
     a = (i & 0xff000000) >> 24
-    return tuple([linear(c/0xff) for c in (r,g,b)] + [a/255])
+    return (r/255, g/255, b/255, a/255)
 
 
 def createMaterial(texture, shader, sub):
