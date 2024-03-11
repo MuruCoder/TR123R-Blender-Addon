@@ -1,7 +1,7 @@
 bl_info = {
     "name": "TRM Format (Tomb Raider I-III Remastered)",
     "description": "Import/Export addon for .TRM files.",
-    "version": (0, 5, 0),
+    "version": (0, 5, 1),
     "blender": (4, 0, 0),
     "author": "MuruCoder, MaRaider, Czarpos @ www.tombraiderforums.com",
     "location": "File > Import-Export",
