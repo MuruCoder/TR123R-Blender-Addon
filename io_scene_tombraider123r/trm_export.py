@@ -113,11 +113,11 @@ def processTRM(mesh, data, scale, matrix):
         ids = mat.name.split("_")
         tex = 8000
         shd = 0
-        if ids[0] and ids[0].isnumeric():
+        if ids[0].isnumeric():
             tex = int(ids[0])
-        if ids[1] and ids[1].isnumeric():
+        if len(ids)>1 and ids[1].isnumeric():
             shd = int(ids[1])
-        if ids[2]:
+        if len(ids)>2:
             if ids[2] == 'B': mark[1] = 'indicesB'
             if ids[2] == 'C': mark[1] = 'indicesC'
 
@@ -127,11 +127,16 @@ def processTRM(mesh, data, scale, matrix):
             mark[2] = len(textures)
             textures.append(tex)
 
-        shd1 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color1'].default_value)
-        shd2 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color2'].default_value)
-        shd3 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color3'].default_value)
-        shd4 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color4'].default_value)
-
+        if 'Group' in mat.node_tree.nodes.keys():
+            shd1 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color1'].default_value)
+            shd2 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color2'].default_value)
+            shd3 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color3'].default_value)
+            shd4 = rgba2int(mat.node_tree.nodes['Group'].inputs['Color4'].default_value)
+        else:
+            shd1 = 0
+            shd2 = 0
+            shd3 = 0
+            shd4 = 0
         skey = "%d_%d_%d_%d_%d" % (shd, shd1, shd2, shd3, shd4)
         if skey not in shaders:
             shaders[skey] = {'pack': pack("<5I", shd, shd1, shd2, shd3, shd4), 'indicesA': [], 'indicesB': [], 'indicesC': []}
