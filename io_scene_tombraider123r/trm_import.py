@@ -203,7 +203,6 @@ def processTRM(data, name, scale):
     for n in range(0, len(indices), 3):
         faces.append((indices[n], indices[n+2], indices[n+1]))
     mesh.from_pydata(verts, edges, faces, shade_flat=False)
-    mesh.update(calc_edges=True, calc_edges_loose=True)
     trm = bpy.data.objects.new(name, mesh)
 
     # NORMALS & VERTEX GROUPS
@@ -217,13 +216,13 @@ def processTRM(data, name, scale):
 
     mesh.use_auto_smooth = True
     mesh.normals_split_custom_set_from_vertices(normals)
-    mesh.calc_normals_split()
 
     groups = trm.vertex_groups
     for n in range(max_group + 1):
         groups.new(name="Joint%d" % n)
 
     for n in range(len(vertices)):
+        v = vertices[n]
         if v[11] > 0:
             groups[v[7]].add([n], v[11] / 255, 'ADD')
         if v[12] > 0:
@@ -274,7 +273,7 @@ def processTRM(data, name, scale):
                 polygons[p].material_index = current
             current += 1
 
-    mesh.update(calc_edges=True)
+    mesh.update()
     mesh.validate()
 
     return trm
@@ -285,7 +284,9 @@ def normalByte2Float(x, y, z):
     y -= 127
     z -= 127
     length = sqrt((x * x) + (y * y) + (z * z))
-    return (x / length, y / length, z / length)
+    if length != 0:
+        return (x / length, y / length, z / length)
+    return (0, 0, 0)
 
 
 def int2rgba(i):
